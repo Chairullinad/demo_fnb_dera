@@ -143,7 +143,7 @@ tr:hover td{background:#f8fafc}
 <div id="login">
   <div class="login-box">
     <h1>🍽️ FnB Integration System</h1>
-    <p class="sub">Demo v4 — Dengan integrasi GoFood, GrabFood, ShopeeFood</p>
+    <p class="sub">Demo v4 — Dilengkapi Unlimited Outlets Setup</p>
     <div class="role-grid">
       <button class="role-btn" onclick="login('owner')"><span class="icon">👑</span>
         <div><div class="label">Owner</div><div class="desc">Dashboard, keuangan, semua modul</div></div></button>
@@ -177,13 +177,18 @@ tr:hover td{background:#f8fafc}
       <div class="logout" onclick="logout()">⎋ Logout</div></div>
   </aside>
   <main class="main">
-    <div class="topbar"><h2 id="pageTitle">Dashboard</h2>
-      <select class="outlet-picker" id="outletPicker">
-        <option value="all">🏢 Semua Outlet (Konsolidasi)</option>
-        <option value="A">📍 Outlet A — Sudirman</option>
-        <option value="B">📍 Outlet B — Kemang</option>
-        <option value="C">📍 Outlet C — BSD</option>
-      </select></div>
+    <div class="topbar">
+      <h2 id="pageTitle">Dashboard</h2>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="badge badge-green" style="padding:8px 12px; font-size:12px;">✨ Unlimited Outlets</span>
+        <select class="outlet-picker" id="outletPicker">
+          <option value="all">🏢 Semua Outlet (Konsolidasi)</option>
+          <option value="A">📍 Outlet A — Sudirman</option>
+          <option value="B">📍 Outlet B — Kemang</option>
+          <option value="C">📍 Outlet C — BSD</option>
+        </select>
+      </div>
+    </div>
     <div id="content"></div>
   </main>
 </div>
@@ -306,7 +311,7 @@ const NAV = {
   owner:[
     {id:'dashboard',icon:'📊',label:'Dashboard'},
     {id:'keuangan',icon:'💰',label:'Laporan Keuangan'},
-    {id:'delivery',icon:'🛵',label:'Delivery Aggregator',badge:true},
+    {id:'delivery',icon:'🛵',label:'Delivery (Add-On)',badge:true},
     {id:'onlineorders',icon:'📱',label:'Pesanan Online',badge:true},
     {id:'transfer',icon:'🚚',label:'Transfer Stok'},
     {id:'supplier',icon:'🏭',label:'Supplier'},
@@ -316,7 +321,7 @@ const NAV = {
   ],
   kasir:[
     {id:'pos',icon:'🛒',label:'POS / Kasir'},
-    {id:'delivery',icon:'🛵',label:'Delivery Aggregator',badge:true},
+    {id:'delivery',icon:'🛵',label:'Delivery (Add-On)',badge:true},
     {id:'onlineorders',icon:'📱',label:'Pesanan Online',badge:true},
     {id:'transfer',icon:'🚚',label:'Transfer Stok'},
     {id:'supplier',icon:'🏭',label:'Supplier'},
@@ -413,7 +418,7 @@ function pageDashboard(){
       <a href="#" onclick="goTo('inventory');return false" style="margin-left:auto;color:var(--primary);font-weight:600">Lihat →</a></div>
 
     <div class="card" style="margin-bottom:16px;">
-      <h3 style="font-size:15px;margin-bottom:14px;">🛵 Penjualan Delivery Aggregator</h3>
+      <h3 style="font-size:15px;margin-bottom:14px;">🛵 Penjualan Delivery Aggregator <span class="badge badge-red">Mockup Add-On</span></h3>
       <div class="grid grid-3">
         ${Object.keys(platformInfo).map(p=>{
           const info = platformInfo[p];
@@ -525,7 +530,6 @@ function renderJurnal(){
         <td><span class="badge badge-purple">${j.kredit}</span></td>
         <td style="text-align:right;font-weight:600;">${rupiah(j.jumlah)}</td></tr>`).join('')}
     </table>
-    <p style="font-size:12px;color:var(--muted);margin-top:12px;">💡 Termasuk komisi delivery dari GoFood/GrabFood/ShopeeFood otomatis tercatat sebagai beban.</p>
   </div>`;
 }
 function renderLabaRugi(){
@@ -626,10 +630,7 @@ function renderPajak(){
         <tr><td>PPh Final UMKM</td><td>Okt 2025</td><td>${rupiah(120000000)}</td><td>0.5%</td>
           <td style="text-align:right;">${rupiah(600000)}</td><td><span class="badge badge-yellow">Draft</span></td></tr>
       </table>
-      <div style="margin-top:14px;">
-        <button class="btn-primary" style="width:auto;padding:8px 20px;">📥 Export CSV e-Faktur</button>
-        <button class="btn-primary" style="width:auto;padding:8px 20px;background:#dc2626;margin-left:8px;">📄 Export PDF SPT</button>
-      </div></div>`;
+      </div>`;
 }
 function renderRekapDelivery(){
   const byPlatform = {};
@@ -660,12 +661,7 @@ function renderRekapDelivery(){
         <td style="text-align:right;font-weight:700;">${rupiah(totalG)}</td>
         <td style="text-align:right;font-weight:700;color:var(--danger);">- ${rupiah(totalC)}</td>
         <td style="text-align:right;font-weight:700;color:var(--success);">${rupiah(totalN)}</td></tr>
-    </table>
-    <p style="font-size:12px;color:var(--muted);margin-top:12px;">
-      💡 Rekap ini dapat di-export ke Excel untuk rekonsiliasi dengan laporan resmi platform.</p>
-    <div style="margin-top:14px;">
-      <button class="btn-primary" style="width:auto;padding:8px 20px;">📥 Export Excel Rekonsiliasi</button>
-    </div></div>`;
+    </table></div>`;
 }
 
 /* ============================================================
@@ -678,6 +674,10 @@ function pageDelivery(){
   const totalN = state.deliveryOrders.reduce((s,o)=>s+o.net,0);
 
   return `
+    <div class="alert alert-danger" style="margin-bottom:16px;">
+      <strong>⚠️ PREVIEW / MOCKUP:</strong> Modul Integrasi Delivery (GoFood/Grab/Shopee) saat ini <strong>TIDAK TERMASUK</strong> dalam paket pembelian standar. Fitur ini masih membutuhkan pendaftaran API resmi dari masing-masing pihak platform.
+    </div>
+
     <div class="grid grid-4" style="margin-bottom:16px;">
       <div class="card"><div class="stat-label">Order Baru</div>
         <div class="stat-value" style="color:var(--warning);">${newCount}</div>
@@ -711,23 +711,6 @@ function pageDelivery(){
           </div>`;
         }).join('')}
       </div>
-    </div>
-
-    <!-- Settings API -->
-    <div class="card" style="margin-bottom:16px;">
-      <h3 style="font-size:15px;margin-bottom:14px;">⚙️ Pengaturan API Aggregator</h3>
-      <div class="settings-box">
-        <strong style="font-size:12px;">🔑 API Endpoint:</strong>
-        <div style="margin-top:8px;font-family:Consolas,monospace;font-size:11px;line-height:1.8;">
-          <div>GoFood: <code>https://api.gofood.co.id/v1/merchant/{id}/orders</code></div>
-          <div>GrabFood: <code>https://partner-api.grab.com/grabfood/v1/orders</code></div>
-          <div>ShopeeFood: <code>https://api.shopeefood.co.id/v2/merchant/orders</code></div>
-        </div>
-      </div>
-      <p style="font-size:12px;color:var(--muted);">
-        💡 Sistem akan otomatis <strong>polling</strong> order baru setiap 10 detik dari tiap platform,
-        atau menerima <strong>webhook</strong> real-time jika didukung.
-      </p>
     </div>
 
     <!-- Simulasi -->
